@@ -43,7 +43,8 @@ def newtons_cooling_law(time, thermal_constant):
     theta = temperature_differences[0] * np.exp(-(thermal_constant) * time)
     return theta
 
-fitted_thermal_constant_nlls, paramater_covariance = sp.optimize.curve_fit(newtons_cooling_law,times, temperature_differences)
+fitted_thermal_constant_nlls, parameter_covariance_nlls = sp.optimize.curve_fit(newtons_cooling_law,times, temperature_differences)
+std_fitted_thermal_constant_nlls = round(np.sqrt(parameter_covariance_nlls[0][0]),3)
 
 #using linear regression by linearising function
 
@@ -67,13 +68,14 @@ times_lr = np.array(times_lr)
 
 ax[2].plot(times_lr, log_temperature_differences, marker=".", linestyle=" ")
 
-minus_beta, ln_theta_0 = np.polyfit(times_lr, log_temperature_differences,1)
+(minus_beta, ln_theta_0), parameter_covariance_lr  = np.polyfit(times_lr, log_temperature_differences,1,cov=True)
 fitted_thermal_constant_lr = float(minus_beta / -1)
+std_fitted_thermal_constant_lr = round(np.sqrt(parameter_covariance_lr[0][0]),3)
 
 ax[2].set_xlabel("$\log{t}$ (s)")
 ax[2].set_ylabel("$\log{\Theta}$ (K)")
 
-print(f"β given by scipy.optimize non-linear least squares method is {fitted_thermal_constant_nlls}. β given by linear regression is {fitted_thermal_constant_lr}")
+print(f"β given by scipy.optimize non-linear least squares method is {fitted_thermal_constant_nlls[0]:.1} ± {std_fitted_thermal_constant_nlls}. β given by linear regression is {fitted_thermal_constant_lr:.1} ± {std_fitted_thermal_constant_lr}")
 #thermal constants are very close 
 
 #we will now try and fit these to their respective curves
