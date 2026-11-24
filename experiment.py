@@ -61,5 +61,7 @@ for j in range(len(log_temperature_differences)):
 
 times_lr = np.array(times_lr)
 
-ax.plot(times_lr, log_temperature_differences)
+ax.plot(times_lr, log_temperature_differences, marker=".", linestyle=" ")
+ax.set_xlabel("$\log{t}$ (s)")
+ax.set_ylabel("$\log{\Theta}$ (K)")
 plt.show()
