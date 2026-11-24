@@ -10,7 +10,7 @@ environment_temperature = 19.6 + 273 #also in Kelvin
 
 data = np.loadtxt("experimental_data.csv",delimiter=",",skiprows=1)
 times = data[:,0]
-voltages = data[:,1]
+voltages = data[:,1] * 1e-3
 
 ax[0].plot(times,voltages,linestyle=" ", marker=".")
 ax[0].set_xlabel("Time (s)")
