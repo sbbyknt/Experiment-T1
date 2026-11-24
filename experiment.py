@@ -62,6 +62,10 @@ for j in range(len(log_temperature_differences)):
 times_lr = np.array(times_lr)
 
 ax.plot(times_lr, log_temperature_differences, marker=".", linestyle=" ")
+
+minus_beta, ln_theta_0 = np.polyfit(times_lr, log_temperature_differences,1)
+beta_lr = float(minus_beta / -1)
+
 ax.set_xlabel("$\log{t}$ (s)")
 ax.set_ylabel("$\log{\Theta}$ (K)")
 plt.show()
