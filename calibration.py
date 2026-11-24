@@ -26,7 +26,7 @@ def voltage_function(probe_temperature,alpha):
 
 fitted_alpha, parameter_covariance = sp.optimize.curve_fit(voltage_function, probe_temperatures, voltages)
 fitted_alpha = fitted_alpha[0] #means we get a number not a np.array
-print(f"α = {fitted_alpha} ± {parameter_covariance}")
+print(f"\u03b1 = {fitted_alpha} ± {parameter_covariance}")
 
 #graph initialising
 fig, ax = plt.subplots()
