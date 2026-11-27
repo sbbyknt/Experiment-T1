@@ -44,7 +44,7 @@ def newtons_cooling_law(time, thermal_constant):
     return theta
 
 fitted_thermal_constant_nlls, parameter_covariance_nlls = sp.optimize.curve_fit(newtons_cooling_law,times, temperature_differences)
-std_fitted_thermal_constant_nlls = round(np.sqrt(parameter_covariance_nlls[0][0]),3)
+std_fitted_thermal_constant_nlls = np.sqrt(parameter_covariance_nlls[0][0])
 
 #using linear regression by linearising function
 
@@ -59,12 +59,12 @@ ax[2].plot(times, log_temperature_differences, marker=".", linestyle=" ")
 
 (minus_beta, ln_theta_0), parameter_covariance_lr  = np.polyfit(times, log_temperature_differences,1,cov=True)
 fitted_thermal_constant_lr = float(minus_beta / -1)
-std_fitted_thermal_constant_lr = round(np.sqrt(parameter_covariance_lr[0][0]),3)
+std_fitted_thermal_constant_lr = np.sqrt(parameter_covariance_lr[0][0])
 
 ax[2].set_xlabel("$\log{t}$ (s)")
 ax[2].set_ylabel("$\log{\Theta}$")
 
-print(f"β given by scipy.optimize non-linear least squares method is {fitted_thermal_constant_nlls[0]:.1} ± {std_fitted_thermal_constant_nlls}. β given by linear regression is {fitted_thermal_constant_lr:.1} ± {std_fitted_thermal_constant_lr}")
+print(f"β given by scipy.optimize non-linear least squares method is {fitted_thermal_constant_nlls[0]} ± {std_fitted_thermal_constant_nlls}. β given by linear regression is {fitted_thermal_constant_lr} ± {std_fitted_thermal_constant_lr}")
 #thermal constants are very close 
 
 #we will now try and fit these to their respective curves
@@ -78,6 +78,7 @@ lobf_ydata_lr = newtons_cooling_law(lobf_xdata,fitted_thermal_constant_lr)
 #these plots basically sit on top of each other
 # ax[1].plot(lobf_xdata, lobf_ydata_nlls, linestyle=":", marker=" ", color="r", label="Fit of $\Theta = \Theta_0 e^{\beta t}$ using $\beta$ from `scipy.optimize` method")
 ax[1].plot(lobf_xdata,lobf_ydata_lr,linestyle=":", marker=" ", color="b", label="Fit of $\Theta = \Theta_0 e^{\beta t}$ using $\beta$ from linear regression method")
+ax[2].plot(lobf_xdata, lobf_ydata_lr, linestyle=":", marker=" ", color="b")
 
 plt.legend()
 plt.show()
