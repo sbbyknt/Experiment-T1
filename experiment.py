@@ -78,7 +78,12 @@ lobf_ydata_lr = newtons_cooling_law(lobf_xdata,fitted_thermal_constant_lr)
 #these plots basically sit on top of each other
 # ax[1].plot(lobf_xdata, lobf_ydata_nlls, linestyle=":", marker=" ", color="r", label="Fit of $\Theta = \Theta_0 e^{\beta t}$ using $\beta$ from `scipy.optimize` method")
 ax[1].plot(lobf_xdata,lobf_ydata_lr,linestyle=":", marker=" ", color="b", label="Fit of $\Theta = \Theta_0 e^{\beta t}$ using $\beta$ from linear regression method")
-ax[2].plot(lobf_xdata, lobf_ydata_lr, linestyle=":", marker=" ", color="b")
+
+lobf_log_ydata_lr = list()
+for j in range(len(lobf_xdata)):
+    lobf_log_ydata_lr.append(-1 * fitted_thermal_constant_lr * lobf_xdata[j] + np.log(-temperature_differences[0]))
+print(lobf_log_ydata_lr)
+ax[2].plot(lobf_xdata, lobf_log_ydata_lr, linestyle=":", marker=" ", color="b")
 
 plt.legend()
 plt.show()
