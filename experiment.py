@@ -1,7 +1,7 @@
 import matplotlib.pyplot as plt
 import numpy as np
 import scipy as sp
-from calibration import fitted_alpha, reference_temperature
+from calibration import fitted_alpha, reference_temperature, error_in_fitted_alpha
 
 plt.style.use("ggplot")
 fig, ax = plt.subplots(1,3)
@@ -82,8 +82,23 @@ ax[1].plot(lobf_xdata,lobf_ydata_lr,linestyle=":", marker=" ", color="b", label=
 lobf_log_ydata_lr = list()
 for j in range(len(lobf_xdata)):
     lobf_log_ydata_lr.append(-1 * fitted_thermal_constant_lr * lobf_xdata[j] + np.log(-temperature_differences[0]))
-print(lobf_log_ydata_lr)
 ax[2].plot(lobf_xdata, lobf_log_ydata_lr, linestyle=":", marker=" ", color="b")
+
+#reduced chi-squared test 
+expected_ydata = newtons_cooling_law(times, fitted_thermal_constant_lr)
+residuals = temperature_differences - expected_ydata
+
+std_V = 0.01E-3
+std_theta = np.sqrt(((-1 * std_V)/fitted_alpha)**2 + ((voltages * error_in_fitted_alpha)/fitted_alpha ** 2)**2)
+
+dof = len(temperature_differences) - 1 
+
+chi_squared = 0 
+for k in range(len(residuals)):
+    chi_squared += (residuals[k] / std_theta[k]) ** 2
+
+reduced_chi_squared = chi_squared / dof 
+print(f"Reduced chi-squared test value: {reduced_chi_squared}")
 
 plt.legend()
 plt.show()
