@@ -18,7 +18,7 @@ ax[0].set_ylabel("Voltage (V)")
 
 probe_temperatures = list()
 for (i, voltage) in enumerate(voltages):
-    probe_temperature = (voltage/fitted_alpha) + reference_temperature
+    probe_temperature = -(voltage/fitted_alpha) + reference_temperature
     probe_temperatures.append(probe_temperature)
 
 probe_temperatures = np.array(probe_temperatures)
@@ -31,7 +31,7 @@ temperature_differences = np.array(temperature_differences)
 
 ax[1].plot(times, temperature_differences,linestyle=" ", marker=".")
 ax[1].set_xlabel("Time (s)")
-ax[1].set_ylabel("$\Theta$ (K)")
+ax[1].set_ylabel("$\Theta$")
 
 #we now need to find β. There are two ways of doing this globally:
 # 1. non-linear least squares method from Scipy.optimize
@@ -53,27 +53,16 @@ std_fitted_thermal_constant_nlls = round(np.sqrt(parameter_covariance_nlls[0][0]
 #
 # we therefore want to plot t against log(theta), which will give us a gradient of -beta
 
-log_temperature_differences = list()
-for i in range(len(temperature_differences)):
-    if temperature_differences[i] > 0:
-        log_temperature_differences.append(np.log(temperature_differences[i]))
+log_temperature_differences = np.log(-temperature_differences)
 
-log_temperature_differences = np.array(log_temperature_differences)
+ax[2].plot(times, log_temperature_differences, marker=".", linestyle=" ")
 
-times_lr = list()
-for j in range(len(log_temperature_differences)):
-    times_lr.append(times[j])
-
-times_lr = np.array(times_lr)
-
-ax[2].plot(times_lr, log_temperature_differences, marker=".", linestyle=" ")
-
-(minus_beta, ln_theta_0), parameter_covariance_lr  = np.polyfit(times_lr, log_temperature_differences,1,cov=True)
+(minus_beta, ln_theta_0), parameter_covariance_lr  = np.polyfit(times, log_temperature_differences,1,cov=True)
 fitted_thermal_constant_lr = float(minus_beta / -1)
 std_fitted_thermal_constant_lr = round(np.sqrt(parameter_covariance_lr[0][0]),3)
 
 ax[2].set_xlabel("$\log{t}$ (s)")
-ax[2].set_ylabel("$\log{\Theta}$ (K)")
+ax[2].set_ylabel("$\log{\Theta}$")
 
 print(f"β given by scipy.optimize non-linear least squares method is {fitted_thermal_constant_nlls[0]:.1} ± {std_fitted_thermal_constant_nlls}. β given by linear regression is {fitted_thermal_constant_lr:.1} ± {std_fitted_thermal_constant_lr}")
 #thermal constants are very close 
